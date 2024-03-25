@@ -4,7 +4,8 @@
 #include <stdbool.h>
 // ? #include <ncurses.h>
 // ? #include <pbPlots.h>
-// ? #include <libcurl.h>
+#include <curl/curl.h>
+#include <jnasson.h>
 // ? #include <sqlite3.h>
 
 #define FOR(i,n) for(int i=0; i<n; i++)
