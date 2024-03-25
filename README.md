@@ -3,22 +3,29 @@
 # Introduction
 One stop solution to your travel management!
 
-# Installation
-## Dependencies
-- The software requires the header file ```dependencies.h``` in the working directory.
-- Three external modules/libraries have been utilised : Ncurses, Sqlite3, cURL
-- For MacOS
-  - Install homebrew
-  ```zsh
-  % /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-  ```
-  - We install all the libraries using it
-  ```zsh
-  % brew install ncurses && brew install sqlite3 && brew install curl
-  ```
-
-## Running the program
-- We run it using the following command in terminal
+# Dependencies
+### The software requires the header file ```dependencies.h``` in the working directory.
+### Four external modules/libraries have been utilised : Ncurses, Sqlite3, cURL and jansson
+## For MacOS
+- Install homebrew
 ```zsh
-% gcc -o main main.c -lncurses -lsqlite3 -lcurl && ./main
+% /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+```
+- We install all the libraries using it
+```zsh
+% brew install ncurses && brew install sqlite3 && brew install curl && brew install jansson
+```
+- We find out the default includePath of our compiler
+```zsh
+gcc -x c -v -E /dev/null
+```
+- Finally we copy the files from homebrew to includePath
+```zsh
+cp -R <origin:headerFile> <destination:includePath>
+```
+
+# Running the program
+### We run it using the following command in terminal
+```zsh
+% gcc -o main main.c -lncurses -lsqlite3 -lcurl -ljansson && ./main
 ```
