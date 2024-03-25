@@ -1,0 +1,12 @@
+{
+  "origin": "BOM",
+  "destination": "DEL",
+  "departureDate": "2024-04-10",
+  "returnDate": "2024-04-17",
+  "passengers": {
+    "adults": 1,
+    "children": 0,
+    "infants": 0
+  },
+  "cabinClass": "Economy"
+}
