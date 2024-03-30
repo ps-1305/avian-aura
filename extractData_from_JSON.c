@@ -185,5 +185,3 @@ void extractData(__info__ user){
 //     scanf("%d %d %d %d %d", &passenger.day, &passenger.month, &passenger.year, &passenger.adults, &passenger.child);
 //     extractData(passenger);
 // }
-
-// Test results : 
