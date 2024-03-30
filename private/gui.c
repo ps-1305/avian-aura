@@ -1,4 +1,4 @@
-#include "dependencies.h>
+#include "dependencies.h"
 
 void print_menu_1(WINDOW *win1, int h1);
 void print_menu_2(WINDOW *win2, int h2);
