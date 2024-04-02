@@ -1,15 +1,6 @@
-#include "dependencies.h"
+#include "gui.h"
 
-void print_menu_1(WINDOW *win1, int h1);
-void print_menu_2(WINDOW *win2, int h2);
-
-void profile(WINDOW *win);
-void flights(WINDOW *win);
-void trains(WINDOW *win);
-void buses(WINDOW *win);
-void wayfares(WINDOW *win);
-
-char* choices[] = {" Profile ", " Flights ", " Buses ", " Wayfares "};
+char* choices[] = {" Profile ", " Flights ", " Trains ", " Buses ", " Wayfarer "};
 int n_choices = sizeof(choices) / sizeof(char *);
 
 int main(void)
@@ -24,8 +15,8 @@ int main(void)
 
     curs_set(0);
 
-    win1 = newwin(20, 15, 0, 0);
-    win2 = newwin(20, 50, 0, 16);
+    win1 = newwin(20, 19, 0, 0);
+    win2 = newwin(20, 50, 0, 20);
     keypad(win1, TRUE);
     keypad(win2, TRUE);
 
@@ -96,7 +87,7 @@ int main(void)
 
         if(ch1 == 5)
         {
-            // wayfares(win2);
+            // wayfarer(win2);
         }
     }
 }
