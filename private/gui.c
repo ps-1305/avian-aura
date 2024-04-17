@@ -7,7 +7,7 @@ int main(void)
 {
     WINDOW *win1;
     WINDOW *win2;
-    WINDOW *win3
+    WINDOW *win3;
 
     initscr();
     clear();
@@ -17,7 +17,9 @@ int main(void)
 
     win1 = newwin(20, 19, 0, 0);
     win2 = newwin(20, 50, 0, 20);
+    win3 = newwin(20, 70, 0 , 0);
 
+    keypad(win3, TRUE);
     keypad(win1, TRUE);
     keypad(win2, TRUE);
 
@@ -29,8 +31,23 @@ int main(void)
 
     int c = 0;
 
+    int logged_in = 0;
+
     while(1)
     {
+        if (logged_in == 0)
+        {
+
+            start(win3);
+
+            werase(win3);
+            delwin(win3);
+
+            logged_in = 1;
+
+            continue;
+        }
+
         print_menu_1(win1, h1);
         print_menu_2(win2, 0, 0);
 
@@ -68,19 +85,12 @@ int main(void)
 
         if(ch1 == 1)
         {
-            if (logged_in == 1)
-            {
-                profile(win2);
-            }
-            else
-            {
-                login(win3);
-            }
+            profile(win2);
         }
 
         if(ch1 == 2)
         {
-            // flights(win2);
+            flights(win2);
         }
 
         if(ch1 == 3)
@@ -147,4 +157,35 @@ void profile(WINDOW *win)
     mvwprintw(win, 8, 11, "Password: ");
 
     curs_set(0);
+
+    noecho();
+}
+
+void start(WINDOW *win)
+{
+    echo();
+    while(1)
+    {
+        print_menu_2(win, 0, 0);
+        
+        mvwprintw(win, 1, 8, "    _        _                  _                   ");
+        mvwprintw(win, 2, 8, "   / \\__   _(_) __ _ _ __      / \\  _   _ _ __ __ _ ");
+        mvwprintw(win, 3, 8, "  / _ \\ \\ / / |/ _` | '_ \\    / _ \\| | | | '__/ _` |");
+        mvwprintw(win, 4, 8, " / ___ \\ V /| | (_| | | | |  / ___ \\ |_| | | | (_| |");
+        mvwprintw(win, 5, 8, "/_/   \\_\\_/ |_|\\__,_|_| |_| /_\\/   \\_\\__,_|_| \\__,_|");
+
+        char c3 = wgetch(win);
+
+        if (c3 == 10)
+        {
+            break;
+        }
+    }
+
+    noecho();
+}
+
+void flights(WINDOW *win)
+{
+    
 }
