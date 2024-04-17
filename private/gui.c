@@ -7,7 +7,7 @@ int main(void)
 {
     WINDOW *win1;
     WINDOW *win2;
-
+    WINDOW *win3
 
     initscr();
     clear();
@@ -17,6 +17,7 @@ int main(void)
 
     win1 = newwin(20, 19, 0, 0);
     win2 = newwin(20, 50, 0, 20);
+
     keypad(win1, TRUE);
     keypad(win2, TRUE);
 
@@ -31,13 +32,13 @@ int main(void)
     while(1)
     {
         print_menu_1(win1, h1);
-        print_menu_2(win2, h2);
+        print_menu_2(win2, 0, 0);
+
         noecho();
 
         wattron(win1, A_BOLD | A_UNDERLINE);
         mvwprintw(win1, 1, 3, "Dashboard");
         wattroff(win1, A_BOLD | A_UNDERLINE);
-
 
         while(1)
         {	
@@ -67,7 +68,14 @@ int main(void)
 
         if(ch1 == 1)
         {
-            // profile(win2);
+            if (logged_in == 1)
+            {
+                profile(win2);
+            }
+            else
+            {
+                login(win3);
+            }
         }
 
         if(ch1 == 2)
@@ -116,14 +124,27 @@ void print_menu_1(WINDOW *win1, int h1)
     wrefresh(win1);
 }
 
-void print_menu_2(WINDOW *win2, int h2)
+void print_menu_2(WINDOW *win, int x, int y)
 {
-    box(win2, 0, 0);
+    box(win, y, x);
 
-    wrefresh(win2);
+    wrefresh(win);
 }
 
 void profile(WINDOW *win)
 {
-    // login and signup data will be stored from here
+    echo();
+    wattron(win, A_BOLD | A_UNDERLINE);
+    mvwprintw(win, 1, 20, "AVIAN AURA");
+    wattroff(win, A_BOLD | A_UNDERLINE);
+
+    char user[100];
+    char pass[100];
+
+    curs_set(1);
+
+    mvwprintw(win, 7, 11, "Username: ");
+    mvwprintw(win, 8, 11, "Password: ");
+
+    curs_set(0);
 }
