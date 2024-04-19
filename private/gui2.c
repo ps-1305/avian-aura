@@ -1,22 +1,9 @@
 #include "gui.h"
 
 char* choices[] = {" Profile ", " Flights ", " Trains ", " Buses ", " Wayfarer "};
+char* choices2[] = {" LOG-IN ", " SIGN-IN ", " Forgot Password? "};
 int n_choices = sizeof(choices) / sizeof(char *);
-
-int handle_mouse_click(int y, int x) {
-    // Check if click coordinates fall within button areas
-    if (y == 12 && x >= 24 && x < 33) {
-        // Handle LOG-IN click
-        return 1;
-    } else if (y == 12 && x >= 34 && x < 44) {
-        // Handle SIGN-UP click
-        return 2;
-    } else if (y == 13 && x >= 24 && x < 44) {
-        // Handle Forgot Password? click
-        return 3;
-    }
-    return 0; // No button clicked
-}
+int n_choices2 = sizeof(choices2) / sizeof(char *);
 
 int main(void)
 {
@@ -30,7 +17,7 @@ int main(void)
 
     curs_set(0);
 
-    win1 = newwin(25, 19, 0, 0);
+    win1 = newwin(28, 19, 0, 0);
     win2 = newwin(20, 50, 0, 20);
     win3 = newwin(20, 70, 0 , 0);
 
@@ -38,11 +25,9 @@ int main(void)
     keypad(win1, TRUE);
     keypad(win2, TRUE);
 
-    // Enable mouse events
-    mousemask(ALL_MOUSE_EVENTS, NULL);
-
     int h1 = 1;
     int h2 = 1;
+    int h3 = 1;
 
     int ch1 = 0;
     int ch2 = 0;
@@ -57,6 +42,7 @@ int main(void)
         {
 
             start(win3);
+            //print_det(win1,h1,0);
 
             werase(win3);
             delwin(win3);
@@ -159,6 +145,28 @@ void print_menu_2(WINDOW *win, int x, int y)
     wrefresh(win);
 }
 
+void print_det(WINDOW *win, int h1, int cursor_active)
+{
+    // Print choices2
+    int x = 24;
+    int y = 12;
+    for(int i = 0; i < n_choices2; ++i)
+    {
+        if(i == h1 - 1) // Highlight the selected choice
+        {
+            wattron(win, A_REVERSE);
+            mvwprintw(win, y + i, x, "%s", choices2[i]);
+            wattroff(win, A_REVERSE);
+            if (cursor_active)
+                curs_set(1); // Activate cursor
+        }
+        else
+        {
+            mvwprintw(win, y + i, x, "%s", choices2[i]);
+        }
+    }
+}
+
 void profile(WINDOW *win)
 {
     echo();
@@ -189,29 +197,8 @@ void profile(WINDOW *win)
     mvwprintw(win, 10, 11, "Entered Username: %s", username);
     mvwprintw(win, 11, 11, "Entered Password: %s", password);
 
-    // // Print Log-in, Sign up, and Forgot Password buttons
-    // mvwprintw(win, 12, 24, "[ LOG-IN ]");
-    // mvwprintw(win, 12, 34, "[ SIGN-UP ]");
-    // mvwprintw(win, 13, 24, "[ Forgot Password? ]");
-
-    // refresh();
-
-    // int ch = wgetch(win);
-    // if (ch == KEY_MOUSE) {
-    //   MEVENT event;
-    //   getmouse(&event);
-    //   int clicked_button = handle_mouse_click(event.y, event.x);
-    //   if (clicked_button == 1) {
-    //     // Handle LOG-IN button click
-    //   } else if (clicked_button == 2) {
-    //     // Handle SIGN-UP button click
-    //   } else if (clicked_button == 3) {
-    //     // Handle Forgot Password? button click
-    //   }
-    // }
-
-    // // Refresh the window to display the entered username and password
-    // wrefresh(win);
+    // Refresh the window to display the entered username and password
+    wrefresh(win);
 }
 
 void start(WINDOW *win)
@@ -227,73 +214,41 @@ void start(WINDOW *win)
         mvwprintw(win, 4, 8, " / ___ \\ V /| | (_| | | | |  / ___ \\ |_| | | | (_| |");
         mvwprintw(win, 5, 8, "/_/   \\_\\_/ |_|\\__,_|_| |_| /_/   \\_\\__,_|_|  \\__,_|");
 
-        char username[100];
-        char password[100];
+    char username[100];
+    char password[100];
 
-        curs_set(1);
+    curs_set(1);
 
-        mvwprintw(win, 8, 25, "Username: ");
-        wgetstr(win, username); // Input for username
+    mvwprintw(win, 8, 25, "Username: ");
+    wgetstr(win, username); // Input for username
 
-        mvwprintw(win, 9, 25, "Password: ");
-        curs_set(0);
-        noecho();
+    mvwprintw(win, 9, 25, "Password: ");
+    curs_set(0);
+    noecho();
 
-        curs_set(1);
-        wgetstr(win, password); // Input for password
-        curs_set(0);
-        noecho();
+    curs_set(1);
+    wgetstr(win, password); // Input for password
+    curs_set(0);
+    noecho();
 
-        // Do something with username and password here, e.g., validate credentials
+    // Display the entered username and password
+    mvwprintw(win, 10, 20, "Entered Username: %s", username);
+    mvwprintw(win, 11, 20, "Entered Password: %s", password);
 
-        // Display the entered username and password
-        mvwprintw(win, 10, 20, "Entered Username: %s", username);
-        mvwprintw(win, 11, 20, "Entered Password: %s", password);
-
-    // Print Log-in, Sign up, and Forgot Password buttons
-        mvwprintw(win, 12, 24, "[ LOG-IN ]");
-        mvwprintw(win, 12, 34, "[ SIGN-UP ]");
-        mvwprintw(win, 13, 24, "[ Forgot Password? ]");
-
-    refresh();
-
-    int ch = wgetch(win);
-    if (ch == KEY_MOUSE) {
-      MEVENT event;
-      getmouse(&event);
-      int clicked_button = handle_mouse_click(event.y, event.x);
-      if (clicked_button == 1) {
-        // Handle LOG-IN button click
-      } else if (clicked_button == 2) {
-        // Handle SIGN-UP button click
-      } else if (clicked_button == 3) {
-        // Handle Forgot Password? button click
-      }
-    }
-
-    // Refresh the window to display the entered username and password
-    wrefresh(win);
-
-        int ch = wgetch(win);
-        if (ch == KEY_MOUSE) {
-          MEVENT event;
-          getmouse(&event);
-          int clicked_button = handle_mouse_click(event.y, event.x);
-          if (clicked_button == 1) {
-            // Handle LOG-IN button click
-          } else if (clicked_button == 2) {
-            // Handle SIGN-UP button click
-          } else if (clicked_button == 3) {
-            // Handle Forgot Password? button click
-          }
-        }
-
+        // Print choices2
+        int h3 = 1;
+        print_det(win, h3, 0);
+        
         char c3 = wgetch(win);
 
         if (c3 == 10)
         {
             break;
         }
+
+    // Refresh the window to display the entered username and password
+    wrefresh(win);
     }
+
     noecho();
 }
