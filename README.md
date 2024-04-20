@@ -4,8 +4,8 @@
 One stop solution to your travel management!
 
 # Dependencies
-### The software requires the header file ```dependencies.h``` in the working directory.
-### Four external modules/libraries have been utilised : Ncurses, Sqlite3, cURL and jansson
+### The software requires the header files ```dependencies.h``` , ```secondary.h``` and ```graphs.h``` in the working directory.
+### Four external modules/libraries have been utilised : GTK, cURL and jansson
 ## For MacOS
 - Install homebrew
 ```zsh
@@ -13,19 +13,24 @@ One stop solution to your travel management!
 ```
 - We install all the libraries using it
 ```zsh
-% brew install ncurses && brew install sqlite3 && brew install curl && brew install jansson
+% brew install gtk+3 && brew install jansson && brew install pkg-config
 ```
 - We find out the default includePath of our compiler
 ```zsh
-gcc -x c -v -E /dev/null
+% gcc -x c -v -E /dev/null
 ```
 - Finally we copy the files from homebrew to includePath
 ```zsh
-cp -R <origin:headerFile> <destination:includePath>
+% cp -R <origin:headerFile> <destination:includePath>
 ```
+- Our program uses ```gtk+-3.24.6``` for its graphics rendering
 
 # Running the program
-### We run it using the following command in terminal
+### We run it using the shell file provided with the code 
 ```zsh
-% gcc -o main main.c -lncurses -lsqlite3 -lcurl -ljansson && ./main
+% sh make.sh
+```
+### We can also run it using the gcc command
+```zsh
+% gcc -o login login.c `pkg-config --cflags --libs gtk+-3.0` && ./login
 ```
