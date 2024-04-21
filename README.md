@@ -7,8 +7,8 @@ Features:
 - Railway booking
 
 # Dependencies
-### The software requires the header files ```dependencies.h``` , ```secondary.h``` and ```graphs.h``` in the working directory.
-### Four external modules/libraries have been utilised : GTK, cURL and jansson
+### The software requires the header file ```dependencies.h``` in the working directory.
+### These external files have been utilised : GTK 
 ## For MacOS
 - Install homebrew
 ```zsh
@@ -37,3 +37,6 @@ Features:
 ```zsh
 % gcc -o login login.c `pkg-config --cflags --libs gtk+-3.0` && ./login
 ```
+# Further scope
+- SQL integration
+- Better UX
