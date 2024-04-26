@@ -1,4 +1,5 @@
 #include <gtk/gtk.h>
+#include <string.h>
 
 GtkWidget* fname_entry;
 GtkWidget* lname_entry;
@@ -15,7 +16,18 @@ void signupTodb(GtkWidget* widget, GdkEvent* event){
     const char* uname =  gtk_entry_get_text(GTK_ENTRY(username_entry));
     const char* pass =  gtk_entry_get_text(GTK_ENTRY(password_entry));
     const char* rc =  gtk_entry_get_text(GTK_ENTRY(rec_code_entry));
-    fprintf(__db__, "%s, %s, %s, %s, %s\n", uname, pass, fname, lname, rc);
+    if(strlen(fname) > 0 && strlen(lname) > 0 && strlen(uname) > 0 && strlen(pass) > 0 && strlen(rc) > 0){
+        fprintf(__db__, "%s, %s, %s, %s, %s\n", uname, pass, fname, lname, rc);
+    } else{
+        GtkWidget *dialog = gtk_message_dialog_new(
+        GTK_WINDOW(gtk_widget_get_toplevel(widget)),
+        GTK_DIALOG_DESTROY_WITH_PARENT,
+        GTK_MESSAGE_ERROR,
+        GTK_BUTTONS_CLOSE,
+        "One or more field(s) are empty!");
+        gtk_dialog_run(GTK_DIALOG(dialog));
+        gtk_widget_destroy(dialog);
+    }
     fclose(__db__);
 }
 
@@ -75,13 +87,13 @@ void signup_init(int argc, char* argv[]){
     password_entry = gtk_entry_new();
     gtk_box_pack_start(GTK_BOX(hbox_4), password_entry, FALSE, FALSE, 0);
 
-    // 5. Recovery code
+    // 5. Email
     GtkWidget *hbox_5 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 2);
     gtk_container_add(GTK_CONTAINER(vbox), hbox_5);
     gtk_widget_set_margin_start(hbox_5, 20);
     gtk_widget_set_margin_end(hbox_5, 20);
 
-    GtkWidget *recovery_code = gtk_label_new("Recovery code: ");
+    GtkWidget *recovery_code = gtk_label_new("Email: ");
     gtk_box_pack_start(GTK_BOX(hbox_5), recovery_code, FALSE, FALSE, 0);
     rec_code_entry = gtk_entry_new();
     gtk_box_pack_start(GTK_BOX(hbox_5), rec_code_entry, FALSE, FALSE, 0);
