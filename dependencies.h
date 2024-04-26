@@ -199,7 +199,40 @@ const char* train_cities[V] = {
     "Jodhpur - JU"
 };
 
+const char* flight_cities[V] = {
+    "SXR - Srinagar",
+    "IXJ - Jammu",
+    "ATQ - Ambarsar",
+    "IXC - Chandigarh",
+    "DED - Dehradoon",
+    "DEL - Delhi",
+    "JDH - Jodhpur",
+    "JAI - Jaipur",
+    "LKO - Lucknow",
+    "AYJ - Ayodhya",
+    "GAU - Guwahati",
+    "IMF - Imphal",
+    "PAT - Patna",
+    "VNS - Varanasi",
+    "AMD - Ahmedabad",
+    "BDQ - Vadodra",
+    "BHO - Bhopal",
+    "CCU - Kolkata",
+    "STV - Surat",
+    "NAG - Nagpur",
+    "BOM - Mumbai",
+    "PNQ - Pune",
+    "HYD - Hyderabad",
+    "VTZ - Vizag",
+    "GOI - Goa Intl",
+    "BLR - Bangalore",
+    "MAA - Madras",
+    "IXE - Mangalore",
+    "COK - Kochi",
+    "TRV - Trivandrum"
+};
+
 int minDistance(double dist[], bool sptSet[]);
-double dijkstrasAlgorithm(double graph[VERTICES][VERTICES],int src, int dest);
+double dijkstrasAlgorithm(double graph[VERTICES][VERTICES],int src, int dest, int parent[VERTICES]);
 
 #endif
