@@ -1,9 +1,41 @@
 #include "dependencies.h"
 
+void printPath(int parent[], int src, int dest, FILE* file, int enable){
+    if(enable == 1){
+        if (dest == src) {
+		fprintf(file, "%s ", bus_cities[src]);
+		return;
+	    }
+
+	    printPath(parent, src, parent[dest], file, 1);
+
+	    fprintf(file, "==(+%.2lf)==> %s ", bus[dest][parent[dest]], bus_cities[dest]);
+    } else if(enable == 3){
+        if (dest == src) {
+		fprintf(file, "%s ", flight_cities[src]);
+		return;
+	    }
+
+	    printPath(parent, src, parent[dest], file, 3);
+
+	    fprintf(file, "==(+%.2lf)==> %s ", flights[dest][parent[dest]], flight_cities[dest]);
+    } else{
+        if (dest == src) {
+            fprintf(file, "%s ", train_cities[src]);
+            return;
+	    }
+
+	    printPath(parent, src, parent[dest], file, 2);
+
+	    fprintf(file, "==(+%.2lf)==> %s ", trains[dest][parent[dest]], train_cities[dest]);
+    }
+}
+
 void busDijsktra(GtkWidget* widget, GdkEvent* event){
     const char* ticketingDate = gtk_entry_get_text(GTK_ENTRY(date_b));
     gchar* from = gtk_combo_box_text_get_active_text(GTK_COMBO_BOX_TEXT(comboBox_b1));
     gchar* to = gtk_combo_box_text_get_active_text(GTK_COMBO_BOX_TEXT(comboBox_b2));
+    gint pass_b = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(qty_b));
     if(g_strcmp0(from, to) == 0){
         GtkWidget *dialog = gtk_message_dialog_new(
         GTK_WINDOW(gtk_widget_get_toplevel(widget)),
@@ -25,7 +57,8 @@ void busDijsktra(GtkWidget* widget, GdkEvent* event){
         }     
     }
 
-    int ecoPrice = (int) dijkstrasAlgorithm(bus, parsedFrom, parsedTo);
+    int parent[V];
+    int ecoPrice = (int) dijkstrasAlgorithm(bus, parsedFrom, parsedTo, parent);
 
     char filename[100];
     sprintf(filename, "%s-to-%s-date-%s.txt", bus_cities[parsedFrom], bus_cities[parsedTo], ticketingDate);
@@ -33,7 +66,19 @@ void busDijsktra(GtkWidget* widget, GdkEvent* event){
     fprintf(ticket, "Date : %s\n", ticketingDate);
     fprintf(ticket, "From : %s\n", bus_cities[parsedFrom]);
     fprintf(ticket, "To : %s\n", bus_cities[parsedTo]);
-    fprintf(ticket, "Price : Rupees %d /-\n", ecoPrice);
+    fprintf(ticket, "Passengers : %d\n", (int) pass_b);
+    if(ecoPrice != INF){
+        if(bus[parsedFrom][parsedTo] != INF){
+            fprintf(ticket, "The direct bus price is: %d\n", (int)bus[parsedFrom][parsedTo]); 
+        } else{
+            fprintf(ticket, "The destination is not reachable directly\nSuggesting the cheapest indirect path:\n");
+        }
+        printPath(parent, parsedFrom, parsedTo, ticket, 1);
+        fprintf(ticket, "\nThe cheapest bus price is : ₹%d/- per person\n", ecoPrice);
+        fprintf(ticket, "Total bus price : ₹%d/-\n", ecoPrice*(int)pass_b);
+    } else{
+        fprintf(ticket, "The city is not reachable through any node(s)\n");
+    }
     fclose(ticket);
 }
 
@@ -45,9 +90,10 @@ void pad_from_all_sides(GtkWidget *widget, int padding){
 }
 
 void trainDijsktra(GtkWidget* widget, GdkEvent* event){
-    const char* ticketingDate = gtk_entry_get_text(GTK_ENTRY(date_b));
-    gchar* from = gtk_combo_box_text_get_active_text(GTK_COMBO_BOX_TEXT(comboBox_b1));
-    gchar* to = gtk_combo_box_text_get_active_text(GTK_COMBO_BOX_TEXT(comboBox_b2));
+    const char* ticketingDate = gtk_entry_get_text(GTK_ENTRY(date_tr));
+    gchar* from = gtk_combo_box_text_get_active_text(GTK_COMBO_BOX_TEXT(comboBox_tr1));
+    gchar* to = gtk_combo_box_text_get_active_text(GTK_COMBO_BOX_TEXT(comboBox_tr2));
+    gint pass_tr = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(qty_tr));
     if(g_strcmp0(from, to) == 0){
         GtkWidget *dialog = gtk_message_dialog_new(
         GTK_WINDOW(gtk_widget_get_toplevel(widget)),
@@ -69,7 +115,8 @@ void trainDijsktra(GtkWidget* widget, GdkEvent* event){
         }     
     }
 
-    int ecoPrice = (int) dijkstrasAlgorithm(trains, parsedFrom, parsedTo);
+    int parent[V];
+    int ecoPrice = (int) dijkstrasAlgorithm(trains, parsedFrom, parsedTo, parent);
 
     char filename[100];
     sprintf(filename, "%s-to-%s-date-%s.txt", train_cities[parsedFrom], train_cities[parsedTo], ticketingDate);
@@ -77,14 +124,27 @@ void trainDijsktra(GtkWidget* widget, GdkEvent* event){
     fprintf(ticket, "Date : %s\n", ticketingDate);
     fprintf(ticket, "From : %s\n", train_cities[parsedFrom]);
     fprintf(ticket, "To : %s\n", train_cities[parsedTo]);
-    fprintf(ticket, "Price : Rupees %d /-\n", ecoPrice);
+    fprintf(ticket, "Passengers : %d\n", (int)pass_tr);
+    if(ecoPrice != INF){
+        if(trains[parsedFrom][parsedTo] != INF){
+            fprintf(ticket, "The direct train price is: %d\n", (int)trains[parsedFrom][parsedTo]); 
+        } else{
+            fprintf(ticket, "The destination is not reachable directly\nSuggesting the cheapest indirect path:\n");
+        }
+        printPath(parent, parsedFrom, parsedTo, ticket, 2);
+        fprintf(ticket, "\nThe cheapest train price is : ₹%d/- per person\n", ecoPrice);
+        fprintf(ticket, "Total train price : ₹%d/-\n", ecoPrice*(int)pass_tr);
+    } else{
+        fprintf(ticket, "The city is not reachable through any node(s)\n");
+    }
     fclose(ticket);
 }
 
 void flightDijsktra(GtkWidget* widget, GdkEvent* event){
-    const char* ticketingDate = gtk_entry_get_text(GTK_ENTRY(date_b));
-    gchar* from = gtk_combo_box_text_get_active_text(GTK_COMBO_BOX_TEXT(comboBox_b1));
-    gchar* to = gtk_combo_box_text_get_active_text(GTK_COMBO_BOX_TEXT(comboBox_b2));
+    const char* ticketingDate = gtk_entry_get_text(GTK_ENTRY(date_f));
+    gchar* from = gtk_combo_box_text_get_active_text(GTK_COMBO_BOX_TEXT(comboBox_f1));
+    gchar* to = gtk_combo_box_text_get_active_text(GTK_COMBO_BOX_TEXT(comboBox_f2));
+    gint pass_f = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(qty_f));
     if(g_strcmp0(from, to) == 0){
         GtkWidget *dialog = gtk_message_dialog_new(
         GTK_WINDOW(gtk_widget_get_toplevel(widget)),
@@ -98,23 +158,36 @@ void flightDijsktra(GtkWidget* widget, GdkEvent* event){
     }
 
     for(int i=0; i<30; i++){
-        if(g_strcmp0(from, bus_cities[i]) == 0){
+        if(g_strcmp0(from, flight_cities[i]) == 0){
             parsedFrom = i;
         }
-        if(g_strcmp0(to, bus_cities[i]) == 0){
+        if(g_strcmp0(to, flight_cities[i]) == 0){
             parsedTo = i;
         }     
     }
 
-    int ecoPrice = (int) dijkstrasAlgorithm(flights, parsedFrom, parsedTo);
+    int parent[V];
+    int ecoPrice = (int) dijkstrasAlgorithm(flights, parsedFrom, parsedTo, parent);
 
     char filename[100];
-    sprintf(filename, "%s-to-%s-date-%s.txt", bus_cities[parsedFrom], bus_cities[parsedTo], ticketingDate);
+    sprintf(filename, "%s-to-%s-date-%s.txt", flight_cities[parsedFrom], flight_cities[parsedTo], ticketingDate);
     ticket = fopen(filename, "w");
     fprintf(ticket, "Date : %s\n", ticketingDate);
-    fprintf(ticket, "From : %s\n", bus_cities[parsedFrom]);
-    fprintf(ticket, "To : %s\n", bus_cities[parsedTo]);
-    fprintf(ticket, "Price : Rupees %d /-\n", ecoPrice);
+    fprintf(ticket, "From : %s\n", flight_cities[parsedFrom]);
+    fprintf(ticket, "To : %s\n", flight_cities[parsedTo]);
+    fprintf(ticket, "Passengers : %d\n", (int)pass_f);
+    if(ecoPrice != INF){
+        if(flights[parsedFrom][parsedTo] != INF){
+            fprintf(ticket, "The direct flight price is: %d\n", (int)flights[parsedFrom][parsedTo]); 
+        } else{
+            fprintf(ticket, "The destination is not reachable directly\nSuggesting the cheapest indirect path:\n");
+        }
+        printPath(parent, parsedFrom, parsedTo, ticket, 3);
+        fprintf(ticket, "\nThe cheapest flight price is : ₹%d/- per person\n", ecoPrice);
+        fprintf(ticket, "Total flight price : ₹%d/-\n", ecoPrice*(int)pass_f);
+    } else{
+        fprintf(ticket, "The city is not reachable through any node(s)\n");
+    }
     fclose(ticket);
 }
 
