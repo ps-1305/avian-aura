@@ -1,9 +1,9 @@
 #include "signup.c"
 #include "forgot_password.c"
 #include "authenticateUser.c"
+#include "major.c"
 #define NEW_GTK_TOPLEVEL "new"
 #define DESTROY_OLD_TOPLEVEL "destroy"
-#include "major.c"
 
 GtkWidget *username_entry;
 GtkWidget *password_entry;
@@ -63,6 +63,23 @@ gboolean forgot_attempt(GtkWidget *widget, GdkEvent *event){
 int main(int argc, char *argv[]){
   gtk_init(&argc, &argv);
 
+  // * photo
+  GdkPixbuf *logo = gdk_pixbuf_new_from_file("img/logo.png", NULL);
+  GdkPixbuf *logo_scaled = gdk_pixbuf_scale_simple(logo, 200, 200, GDK_INTERP_BILINEAR);
+  GtkWidget *image_logo = gtk_image_new_from_pixbuf(logo_scaled);
+  
+  GdkPixbuf *btn_1 = gdk_pixbuf_new_from_file("img/login_button.png", NULL);
+  GdkPixbuf *btn_1_scaled = gdk_pixbuf_scale_simple(btn_1, 225, 50, GDK_INTERP_BILINEAR);
+  GtkWidget *image_btn_1 = gtk_image_new_from_pixbuf(btn_1_scaled);
+  
+  GdkPixbuf *btn_2 = gdk_pixbuf_new_from_file("img/signup_button.png", NULL);
+  GdkPixbuf *btn_2_scaled = gdk_pixbuf_scale_simple(btn_2, 225, 50, GDK_INTERP_BILINEAR);
+  GtkWidget *image_btn_2 = gtk_image_new_from_pixbuf(btn_2_scaled);
+  
+  GdkPixbuf *btn_3 = gdk_pixbuf_new_from_file("img/forgot_button.png", NULL);
+  GdkPixbuf *btn_3_scaled = gdk_pixbuf_scale_simple(btn_3, 225, 50, GDK_INTERP_BILINEAR);
+  GtkWidget *image_btn_3 = gtk_image_new_from_pixbuf(btn_3_scaled);
+
   // * main window
   window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
   gtk_window_set_title(GTK_WINDOW(window), "Avian Aura : Login");
@@ -70,6 +87,15 @@ int main(int argc, char *argv[]){
 
   GtkWidget *vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 7);
   gtk_container_add(GTK_CONTAINER(window), vbox);
+
+  // * adding the photo first
+  GtkWidget *logo_button = gtk_button_new();
+  gtk_button_set_image(GTK_BUTTON(logo_button), image_logo);
+  gtk_button_set_always_show_image(GTK_BUTTON(logo_button), TRUE);
+  gtk_widget_set_margin_top(logo_button, 20);
+  gtk_widget_set_margin_start(logo_button, 20);
+  gtk_widget_set_margin_end(logo_button, 20);
+  gtk_box_pack_start(GTK_BOX(vbox), logo_button, FALSE, FALSE, 0);
 
   // * now we create 2 horizontal windows for username and password
   // 1. This is for username
@@ -96,21 +122,27 @@ int main(int argc, char *argv[]){
   gtk_box_pack_start(GTK_BOX(hbox_2), password_entry, FALSE, FALSE, 0);
 
   // 3. Login button
-  login_button = gtk_button_new_with_label("Login");
+  login_button = gtk_button_new();
+  gtk_button_set_image(GTK_BUTTON(login_button), image_btn_1);
+  gtk_button_set_always_show_image(GTK_BUTTON(login_button), TRUE);
   g_signal_connect(login_button, "clicked", G_CALLBACK(login_attempt), NULL);
   gtk_box_pack_start(GTK_BOX(vbox), login_button, FALSE, FALSE, 0);
   gtk_widget_set_margin_start(login_button, 20);
   gtk_widget_set_margin_end(login_button, 20);
 
   // 4. Signup button
-  signup_button = gtk_button_new_with_label("Signup");
+  signup_button = gtk_button_new();
+  gtk_button_set_image(GTK_BUTTON(signup_button), image_btn_2);
+  gtk_button_set_always_show_image(GTK_BUTTON(signup_button), TRUE);
   g_signal_connect(signup_button, "clicked", G_CALLBACK(signup), NULL);
   gtk_box_pack_start(GTK_BOX(vbox), signup_button, FALSE, FALSE, 0);
   gtk_widget_set_margin_start(signup_button, 20);
   gtk_widget_set_margin_end(signup_button, 20);
   
   // 5. Forgot password  button
-  forgot_password = gtk_button_new_with_label("Forgot Password");
+  forgot_password = gtk_button_new();
+  gtk_button_set_image(GTK_BUTTON(forgot_password), image_btn_3);
+  gtk_button_set_always_show_image(GTK_BUTTON(forgot_password), TRUE);
   g_signal_connect(forgot_password, "clicked", G_CALLBACK(forgot_attempt), NULL);
   gtk_box_pack_start(GTK_BOX(vbox), forgot_password, FALSE, FALSE, 0);
   gtk_widget_set_margin_bottom(forgot_password, 20);
