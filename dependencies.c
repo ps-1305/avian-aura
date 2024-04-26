@@ -17,7 +17,7 @@ int minDistance(double dist[], bool sptSet[]){
 	return min_index;
 }
 
-double dijkstrasAlgorithm(double graph[VERTICES][VERTICES],int src, int dest){
+double dijkstrasAlgorithm(double graph[VERTICES][VERTICES],int src, int dest, int parent[VERTICES]){
 	double dist[VERTICES]; 
 
 	bool sptSet[VERTICES]; 
@@ -36,8 +36,10 @@ double dijkstrasAlgorithm(double graph[VERTICES][VERTICES],int src, int dest){
 
 			if (!sptSet[v] && graph[u][v]
 				&& dist[u] != INF
-				&& dist[u] + graph[u][v] < dist[v])
+				&& dist[u] + graph[u][v] < dist[v]){
 				dist[v] = dist[u] + graph[u][v];
+				parent[v] = u;
+			}
 	}
 
     return dist[dest];
