@@ -220,6 +220,12 @@ int major_init(int argc, char *argv[], char name[]) {
     GdkPixbuf *profile_image = gdk_pixbuf_new_from_file("img/profile.jpeg", NULL);
     GdkPixbuf *profile_scaled = gdk_pixbuf_scale_simple(profile_image, 200, 300, GDK_INTERP_BILINEAR);
     GtkWidget *image_4 = gtk_image_new_from_pixbuf(profile_scaled);
+    
+    GdkPixbuf *book_btn = gdk_pixbuf_new_from_file("img/book_button.png", NULL);
+    GdkPixbuf *books_scaled = gdk_pixbuf_scale_simple(book_btn, 400, 50, GDK_INTERP_BILINEAR);
+    GtkWidget *image_5 = gtk_image_new_from_pixbuf(books_scaled);
+    GtkWidget *image_6 = gtk_image_new_from_pixbuf(books_scaled);
+    GtkWidget *image_7 = gtk_image_new_from_pixbuf(books_scaled);
 
     // * styling
     // font information
@@ -378,7 +384,9 @@ int major_init(int argc, char *argv[], char name[]) {
     gtk_box_pack_start(GTK_BOX(hbox_f4), date_f, TRUE ,TRUE, 0);
     gtk_widget_set_margin_end(date_f, 20);
 
-    GtkWidget* book_f = gtk_button_new_with_label("Book tickets");
+    GtkWidget* book_f = gtk_button_new();
+    gtk_button_set_image(GTK_BUTTON(book_f), image_5);
+    gtk_button_set_always_show_image(GTK_BUTTON(book_f), TRUE);
     g_signal_connect(book_f, "clicked", G_CALLBACK(flightDijsktra), NULL);
     gtk_box_pack_start(GTK_BOX(vboxF), book_f, FALSE, FALSE, 0);
 
@@ -509,7 +517,9 @@ int major_init(int argc, char *argv[], char name[]) {
     gtk_box_pack_start(GTK_BOX(hbox_tr4), date_tr, TRUE ,TRUE, 0);
     gtk_widget_set_margin_end(date_tr, 20);
 
-    GtkWidget* book_tr = gtk_button_new_with_label("Book tickets");
+    GtkWidget* book_tr = gtk_button_new();
+    gtk_button_set_image(GTK_BUTTON(book_tr), image_6);
+    gtk_button_set_always_show_image(GTK_BUTTON(book_tr), TRUE);
     g_signal_connect(book_tr, "clicked", G_CALLBACK(trainDijsktra), NULL);
     gtk_box_pack_start(GTK_BOX(vboxT), book_tr, FALSE, FALSE, 0);
 
@@ -639,7 +649,9 @@ int major_init(int argc, char *argv[], char name[]) {
     gtk_box_pack_start(GTK_BOX(hbox_b4), date_b, TRUE ,TRUE, 0);
     gtk_widget_set_margin_end(date_b, 20);
 
-    GtkWidget* book_b = gtk_button_new_with_label("Book tickets");
+    GtkWidget* book_b = gtk_button_new();
+    gtk_button_set_image(GTK_BUTTON(book_b), image_7);
+    gtk_button_set_always_show_image(GTK_BUTTON(book_b), TRUE);
     g_signal_connect(book_b, "clicked", G_CALLBACK(busDijsktra), NULL);
     gtk_box_pack_start(GTK_BOX(vboxB), book_b, FALSE, FALSE, 0);
 
