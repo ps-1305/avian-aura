@@ -1,6 +1,15 @@
 #include "dependencies.h"
 
+/*
+args = parent array, source integer, destination integer, FILE pointer, enable integer
+returns = void 
+function = it prints the path across the graph
+*/
 void printPath(int parent[], int src, int dest, FILE* file, int enable){
+    // enable = 1 :: BUS
+    // enable = 2 :: FLIGHTS
+    // else :: enable = 3 :: TRAINS
+    // since the enable is typed inside the function itself, it doesn't require else if statements 
     if(enable == 1){
         if (dest == src) {
 		fprintf(file, "%s ", bus_cities[src]);
@@ -31,11 +40,24 @@ void printPath(int parent[], int src, int dest, FILE* file, int enable){
     }
 }
 
+/*
+__CALLBACK__
+args = widget pointer and event element 
+returns = void 
+function = it uses dijsktra's algorithm for buses and then prints out the ticket 
+*/
 void busDijsktra(GtkWidget* widget, GdkEvent* event){
+    // retrieving the date
     const char* ticketingDate = gtk_entry_get_text(GTK_ENTRY(date_b));
+
+    // retrieving the source and destination
     gchar* from = gtk_combo_box_text_get_active_text(GTK_COMBO_BOX_TEXT(comboBox_b1));
     gchar* to = gtk_combo_box_text_get_active_text(GTK_COMBO_BOX_TEXT(comboBox_b2));
+
+    // retrieving the number of passengers 
     gint pass_b = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(qty_b));
+
+    // if the source and destination are the same, it gives a warning dialog box 
     if(g_strcmp0(from, to) == 0){
         GtkWidget *dialog = gtk_message_dialog_new(
         GTK_WINDOW(gtk_widget_get_toplevel(widget)),
@@ -48,6 +70,7 @@ void busDijsktra(GtkWidget* widget, GdkEvent* event){
         return;
     }
 
+    // traversing the bus_cities array to figure out from and to 
     for(int i=0; i<30; i++){
         if(g_strcmp0(from, bus_cities[i]) == 0){
             parsedFrom = i;
@@ -57,16 +80,23 @@ void busDijsktra(GtkWidget* widget, GdkEvent* event){
         }     
     }
 
-    int parent[V];
+    // parent array
+    int parent[VERTICES];
+    // dijsktrasAlgorithm function call
     int ecoPrice = (int) dijkstrasAlgorithm(bus, parsedFrom, parsedTo, parent);
 
+    // making a file 
     char filename[100];
     sprintf(filename, "%s-to-%s-date-%s.txt", bus_cities[parsedFrom], bus_cities[parsedTo], ticketingDate);
     ticket = fopen(filename, "w");
+    
+    // printing the ticket details first
     fprintf(ticket, "Date : %s\n", ticketingDate);
     fprintf(ticket, "From : %s\n", bus_cities[parsedFrom]);
     fprintf(ticket, "To : %s\n", bus_cities[parsedTo]);
     fprintf(ticket, "Passengers : %d\n", (int) pass_b);
+
+    // finally printing the ticket
     if(ecoPrice != INF){
         if(bus[parsedFrom][parsedTo] != INF){
             fprintf(ticket, "The direct bus price is: %d\n", (int)bus[parsedFrom][parsedTo]); 
@@ -82,6 +112,11 @@ void busDijsktra(GtkWidget* widget, GdkEvent* event){
     fclose(ticket);
 }
 
+/*
+args = widget pointer and integer padding
+returns = void 
+function = inserts padding on all sides of a given widget
+*/
 void pad_from_all_sides(GtkWidget *widget, int padding){
     gtk_widget_set_margin_top(widget, padding);
     gtk_widget_set_margin_start(widget, padding);
@@ -89,6 +124,12 @@ void pad_from_all_sides(GtkWidget *widget, int padding){
     gtk_widget_set_margin_bottom(widget, padding);
 }
 
+/*
+__CALLBACK__
+args = widget pointer and event element 
+returns = void 
+function = it uses dijsktra's algorithm for trains and then prints out the ticket 
+*/
 void trainDijsktra(GtkWidget* widget, GdkEvent* event){
     const char* ticketingDate = gtk_entry_get_text(GTK_ENTRY(date_tr));
     gchar* from = gtk_combo_box_text_get_active_text(GTK_COMBO_BOX_TEXT(comboBox_tr1));
@@ -115,7 +156,7 @@ void trainDijsktra(GtkWidget* widget, GdkEvent* event){
         }     
     }
 
-    int parent[V];
+    int parent[VERTICES];
     int ecoPrice = (int) dijkstrasAlgorithm(trains, parsedFrom, parsedTo, parent);
 
     char filename[100];
@@ -140,6 +181,12 @@ void trainDijsktra(GtkWidget* widget, GdkEvent* event){
     fclose(ticket);
 }
 
+/*
+__CALLBACK__
+args = widget pointer and event element 
+returns = void 
+function = it uses dijsktra's algorithm for trains and then prints out the ticket 
+*/
 void flightDijsktra(GtkWidget* widget, GdkEvent* event){
     const char* ticketingDate = gtk_entry_get_text(GTK_ENTRY(date_f));
     gchar* from = gtk_combo_box_text_get_active_text(GTK_COMBO_BOX_TEXT(comboBox_f1));
@@ -166,7 +213,7 @@ void flightDijsktra(GtkWidget* widget, GdkEvent* event){
         }     
     }
 
-    int parent[V];
+    int parent[VERTICES];
     int ecoPrice = (int) dijkstrasAlgorithm(flights, parsedFrom, parsedTo, parent);
 
     char filename[100];
@@ -191,12 +238,18 @@ void flightDijsktra(GtkWidget* widget, GdkEvent* event){
     fclose(ticket);
 }
 
-
+/*
+__MAIN__
+args = argc (the number of arguments), argv (those said arguments), name of the user
+returns = 0
+function = the main window of the entire project 
+*/
 int major_init(int argc, char *argv[], char name[]) {
     gtk_init(&argc, &argv);
 
-    // * predefinitions
-    GtkAdjustment *adjustment = gtk_adjustment_new (1.0, 0.0, 10.0, 1.0, 1.0, 0.0);
+    // * predefinitions - for the spin button
+    // initial value, lower limit, upper limit, increment, page increment (not usable), disabling the page increment
+    GtkAdjustment *adjustment = gtk_adjustment_new (1.0, 1.0, 10.0, 1.0, 1.0, 0.0);
     gdouble cRate = 1;
     guint decimals = 0;
 
@@ -221,8 +274,10 @@ int major_init(int argc, char *argv[], char name[]) {
     GdkPixbuf *profile_scaled = gdk_pixbuf_scale_simple(profile_image, 200, 300, GDK_INTERP_BILINEAR);
     GtkWidget *image_4 = gtk_image_new_from_pixbuf(profile_scaled);
     
+    // book button
     GdkPixbuf *book_btn = gdk_pixbuf_new_from_file("img/book_button.png", NULL);
     GdkPixbuf *books_scaled = gdk_pixbuf_scale_simple(book_btn, 400, 50, GDK_INTERP_BILINEAR);
+    // we create 3 images due to the weird nature of GTK
     GtkWidget *image_5 = gtk_image_new_from_pixbuf(books_scaled);
     GtkWidget *image_6 = gtk_image_new_from_pixbuf(books_scaled);
     GtkWidget *image_7 = gtk_image_new_from_pixbuf(books_scaled);
