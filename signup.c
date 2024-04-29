@@ -1,6 +1,7 @@
 #include <gtk/gtk.h>
 #include <string.h>
 
+/*---COMPILE TIME CONSTANTS---*/
 GtkWidget* fname_entry;
 GtkWidget* lname_entry;
 GtkWidget* username_entry;
@@ -9,13 +10,23 @@ GtkWidget* rec_code_entry;
 GtkWidget* signup_btn;
 FILE* __db__;
 
+/*
+args = widget pointer and event instance pointer
+returns = void
+function = signs up a user to database
+*/
 void signupTodb(GtkWidget* widget, GdkEvent* event){
+    // opening the database
     __db__ = fopen("db.csv", "a");
+
+    // retrieving the entry
     const char* fname =  gtk_entry_get_text(GTK_ENTRY(fname_entry));
     const char* lname =  gtk_entry_get_text(GTK_ENTRY(lname_entry));
     const char* uname =  gtk_entry_get_text(GTK_ENTRY(username_entry));
     const char* pass =  gtk_entry_get_text(GTK_ENTRY(password_entry));
     const char* rc =  gtk_entry_get_text(GTK_ENTRY(rec_code_entry));
+
+    // checking whether the strings are empty or not
     if(strlen(fname) > 0 && strlen(lname) > 0 && strlen(uname) > 0 && strlen(pass) > 0 && strlen(rc) > 0){
         fprintf(__db__, "%s, %s, %s, %s, %s\n", uname, pass, fname, lname, rc);
     } else{
@@ -31,6 +42,11 @@ void signupTodb(GtkWidget* widget, GdkEvent* event){
     fclose(__db__);
 }
 
+/*
+args = argc and argv[]
+returns = void
+function = signup window 
+*/
 void signup_init(int argc, char* argv[]){
     gtk_init(&argc, &argv);
 
@@ -99,7 +115,7 @@ void signup_init(int argc, char* argv[]){
     gtk_box_pack_start(GTK_BOX(hbox_5), rec_code_entry, FALSE, FALSE, 0);
 
     signup_btn = gtk_button_new_with_label("Signup");
-    g_signal_connect(signup_btn, "clicked", G_CALLBACK(signupTodb), NULL);
+    g_signal_connect(signup_btn, "clicked", G_CALLBACK(signupTodb), NULL); // function call
     gtk_box_pack_start(GTK_BOX(vbox), signup_btn, FALSE, FALSE, 0);
 
     // .showall()
