@@ -9,6 +9,10 @@ Features:
 # Dependencies
 ### The software requires the header file ```dependencies.h``` in the working directory.
 ### These external files have been utilised : GTK 
+### The software also requires python and python's smtplib
+```zsh
+% pip install smtp && pip install smtplib
+```
 ## For MacOS
 - Install homebrew
 ```zsh
