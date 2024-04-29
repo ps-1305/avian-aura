@@ -33,11 +33,11 @@ Features:
 - Our program uses ```gtk+-3.24.6``` for its graphics rendering
 
 # Running the program
-### We run it using the shell file provided with the code 
+- We run it using the shell file provided with the code 
 ```zsh
 % sh make.sh
 ```
-### We can also run it using the gcc command
+- We can also run it using the gcc command
 ```zsh
 % gcc -o login login.c `pkg-config --cflags --libs gtk+-3.0` && ./login
 ```
