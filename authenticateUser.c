@@ -10,6 +10,11 @@ typedef struct credential{
     char f_name[20], l_name[20];
 } credential;
 
+/*
+args = username, password, user information
+returns = bool
+function = returns true if the user and password is correct, else false 
+*/
 bool login(const char* username,const char* password, char* info){
     FILE* __db__ = fopen("db.csv", "r");
     char row[max];
